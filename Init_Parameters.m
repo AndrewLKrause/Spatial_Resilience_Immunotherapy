@@ -24,6 +24,16 @@ f = @(u,v,w)c*v-mu1*u+p1*u.*w./(g1+w)+s1;
 g = @(u,v,w)r2*v.*(1-b*v)-p2*u.*v./(g2+v);
 h = @(u,v,w)p3*u.*v./(g3+v)-mu3*w+s3;
 
+% Index labels
+uN = 1:N; vN = N+1:2*N; wN = 2*N+1:3*N;
+
 % Steady states - TODO NEED TO DISCUSS STEADY STATE ANALYSIS CAREFULLY! FOR
 % NOW, PERTURBING AROUND SOL FOR s1=s3=0.
 uss = 0.51746; vss = 0.327434; wss = 0.257944;
+
+% Create a normally distributed vector of size 3*N, mean 1, stdev 1e-2.
+rng(1);
+rand_vec = abs(1+1e-1*randn(3*N,1)); 
+
+% Initial conditions for ODE system
+uvH_init = [uss*rand_vec(uN);vss*rand_vec(vN); wss*rand_vec(wN)];
