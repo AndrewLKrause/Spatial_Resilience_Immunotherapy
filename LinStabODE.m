@@ -2,7 +2,7 @@
 %Mn(i,j) will be the number of feasible coexistence steady states which
 %exist, and M(i,j) will be the number of feasible and stable coexistence
 %steady states. These correspond to the parameters below with s1 = s1R(i)
-%and s3 = s3R(j). 
+%and s3 = s3R(j). TODO: UPDATED NOTATION
 
 
 %Parameters
