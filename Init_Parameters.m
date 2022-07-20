@@ -6,7 +6,7 @@ N = 100^2; % Total number of grid points to use
 
 
 % Time/space scale for simulation
-T = 15000; 
+T = 1500000; 
 tspan = linspace(0,T,1e3); % Interpolate solution on [0,T] with 1e2 points
 x = linspace(0,L,N);
 

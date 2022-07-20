@@ -5,7 +5,7 @@ FH_ODE = @(t, U)[f(U(uN),U(vN),U(wN));...,
     g(U(uN),U(vN),U(wN));h(U(uN),U(vN),U(wN))];
 
 % Solve the ODE - optional could add: 'reltol',1e-9,'AbsTol',1e-9,
-opts = odeset('reltol',1e-11,'AbsTol',1e-11);
+opts = odeset('reltol',1e-12,'AbsTol',1e-12);
 uvH_init = [su*(gu*muw+sw)/(muu*(gu*muw+sw)-pu*sw),1e-6,sw/muw]';
 [T, U] = ode15s(FH_ODE,tspan,uvH_init,opts);
 
