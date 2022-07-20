@@ -12,11 +12,11 @@ rv=1;b=1;pv=0.5555556;gv=0.1;
 pw=27.778;gw=0.001;muw=55.55556;
 
 %Number of grid points in each direction of s1-s3:
-N=400;
+N=100;
 
 %Ranges of s1, s3
-s1R = linspace(0.02,0.03,N);
-s3R = linspace(20,50,N);
+s1R = linspace(0,0.05,N);
+s3R = linspace(0,100,N);
 
 %M will store our stability values
 M = zeros(N);
@@ -25,26 +25,26 @@ Mn = zeros(N);
 
 for i=1:N
     for j=1:N
-        su = s1R(i);
-        sw = s3R(j);
+        s1 = s1R(i);
+        s3 = s3R(j);
 
         % Kinetic functions
-        f = @(u,v,w)c*v-muu*u+pu*u.*w./(gu+w)+su;
+        f = @(u,v,w)c*v-muu*u+pu*u.*w./(gu+w)+s1;
         g = @(u,v,w)rv*v.*(1-b*v)-pv*u.*v./(gv+v);
-        h = @(u,v,w)pw*u.*v./(gw+v)-muw*w+sw;
+        h = @(u,v,w)pw*u.*v./(gw+v)-muw*w+s3;
 
         % Jacobian
         J = @(u,v,w)[-muu+pu.*w./(gu+w),     c,     -gu.*pu.*u./((gu+w).^2);...
             -pv.*v./(gv+v),      rv.*(1-2.*b.*v)-pv*gv*u./((gv+v).^2),   0;...
             pw*v./(gw+v),pw*gw*u./((gw+v).^2),-muw];
-        Jcf = J(su*(gu*muw+sw)/(muu*(gu*muw+sw)-pu*sw),0,sw/muw);
+        Jcf = J(s1*(gu*muw+s3)/(muu*(gu*muw+s3)-pu*s3),0,s3/muw);
         %Compute coefficients for v equation
         c5 = -b^2*rv^2*pw*(-pu + muu)/pv;
         c4 = -2*rv*pw*((-pu + muu)*(b*gv - 1)*rv + c*pv/2)*b/pv;
-        c3 = -rv*(pw*(b^2*gv^2 - 4*b*gv + 1)*(-pu + muu)*rv + pv*(b*c*pw*gv + (su*pw + (-gu*muw - sw)*muu + sw*pu)*b - c*pw))/pv;
-        c2 = (2*gv*pw*(-pu + muu)*(b*gv - 1)*rv^2 - (((su*pw + (-gu*muw - sw)*muu + sw*pu)*b - c*pw)*gv - ((gu*muw + sw)*muu - sw*pu)*gw*b - su*pw + (gu*muw + sw)*muu - sw*pu)*pv*rv + c*pv^2*(gu*muw + sw))/pv;
-        c1 = (-gv^2*pw*(-pu + muu)*rv^2 + ((((gu*muw + sw)*muu - sw*pu)*gw*b + su*pw + (-gu*muw - sw)*muu + sw*pu)*gv - ((gu*muw + sw)*muu - sw*pu)*gw)*pv*rv + pv^2*(gu*muw + sw)*(c*gw + su))/pv;
-        c0 = -gw*(((gu*muw + sw)*muu - sw*pu)*gv*rv - su*pv*(gu*muw + sw));
+        c3 = -rv*(pw*(b^2*gv^2 - 4*b*gv + 1)*(-pu + muu)*rv + pv*(b*c*pw*gv + (s1*pw + (-gu*muw - s3)*muu + s3*pu)*b - c*pw))/pv;
+        c2 = (2*gv*pw*(-pu + muu)*(b*gv - 1)*rv^2 - (((s1*pw + (-gu*muw - s3)*muu + s3*pu)*b - c*pw)*gv - ((gu*muw + s3)*muu - s3*pu)*gw*b - s1*pw + (gu*muw + s3)*muu - s3*pu)*pv*rv + c*pv^2*(gu*muw + s3))/pv;
+        c1 = (-gv^2*pw*(-pu + muu)*rv^2 + ((((gu*muw + s3)*muu - s3*pu)*gw*b + s1*pw + (-gu*muw - s3)*muu + s3*pu)*gv - ((gu*muw + s3)*muu - s3*pu)*gw)*pv*rv + pv^2*(gu*muw + s3)*(c*gw + s1))/pv;
+        c0 = -gw*(((gu*muw + s3)*muu - s3*pu)*gv*rv - s1*pv*(gu*muw + s3));
 
         %Compute roots of quintic
         v_sols = roots([c5,c4,c3,c2,c1,c0]);
@@ -56,7 +56,7 @@ for i=1:N
 
     
         %Check cancer-free stability
-        if((muu*(gu*muw+sw)-pu*sw)<0)
+        if((muu*(gu*muw+s3)-pu*s3)<0)
             Mcf(i,j) = -1;
         elseif(max(real(eigs(Jcf)))>0)
             Mcf(i,j) = 0;
@@ -72,14 +72,14 @@ for i=1:N
             for vss = v_sols'
                 %Compute the values of u and w at steady state.
                 uss = -rv*(b*vss - 1)*(gv + vss)/pv;
-                wss = (pw*uss*vss + gw*sw + sw*vss)/((gw + vss)*muw);
+                wss = (pw*uss*vss + gw*s3 + s3*vss)/((gw + vss)*muw);
 
                 %Check if there is an error in feasibility analysis.
                 if(uss < -1e-14 || wss < -1e-14)
                     "Warning: error in feasibility analysis!"
                     M(i,j) = -1;
-                    su
-                    sw
+                    s1
+                    s3
                 else
                     %Compute if any instability occurs - if so, leave value 
                     %of M_Ij unchanged 

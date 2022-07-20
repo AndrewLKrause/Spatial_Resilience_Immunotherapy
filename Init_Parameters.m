@@ -6,7 +6,7 @@ N = 100^2; % Total number of grid points to use
 
 
 % Time/space scale for simulation
-T = 1500; 
+T = 15000; 
 tspan = linspace(0,T,1e3); % Interpolate solution on [0,T] with 1e2 points
 x = linspace(0,L,N);
 
@@ -15,14 +15,15 @@ x = linspace(0,L,N);
 d1=0.001; d2=0.0000199; d3=0.01;
  
 % Kinetic parameters
-c = 0.25; mu1=0.167; p1=0.69167; g1=20;s1=.01;
-r2=1;b=1;p2=0.5555556;g2=0.1;
-p3=27.778;g3=0.001;mu3=55.55556;s3=.01;
+c = 0.25; muu=0.167; pu=0.69167; gu=20;su=.025;
+rv=1;b=1;pv=0.5555556;gv=0.1;
+pw=27.778;gw=0.001;muw=55.55556;sw=43.9850;
+
 
 % Kinetic functions
-f = @(u,v,w)c*v-mu1*u+p1*u.*w./(g1+w)+s1;
-g = @(u,v,w)r2*v.*(1-b*v)-p2*u.*v./(g2+v);
-h = @(u,v,w)p3*u.*v./(g3+v)-mu3*w+s3;
+f = @(u,v,w)c*v-muu*u+pu*u.*w./(gu+w)+su;
+g = @(u,v,w)rv*v.*(1-b*v)-pv*u.*v./(gv+v);
+h = @(u,v,w)pw*u.*v./(gw+v)-muw*w+sw;
 
 % Index labels
 uN = 1:N; vN = N+1:2*N; wN = 2*N+1:3*N;
