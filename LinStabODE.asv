@@ -6,7 +6,7 @@
 
 
 %Parameters
-c = 0.25;
+c = 0;
 muu=0.167; pu=0.69167; gu=20;
 rv=1;b=1;pv=0.5555556;gv=0.1;
 pw=27.778;gw=0.001;muw=55.55556;
@@ -19,10 +19,10 @@ suR = linspace(0,0.05,N);
 swR = linspace(0,100,N);
 
 %M will store our stability values - coe is coexistence, cf is cancer-free,
-%and coenum is a matrix to store number of feasible states of coexis
+%and coenum is a matrix to store number of feasible states of coexistence.
 Mcoe = zeros(N);
 Mcf = ones(N);
-Mnum = zeros(N);
+Mcoenum = zeros(N);
 
 for i=1:N
     for j=1:N
@@ -60,12 +60,13 @@ for i=1:N
         v_sols(imag(v_sols) ~= 0) = [];
         %Only consider positive roots smaller than 1/b.
         v_sols(0 > v_sols) = []; v_sols(v_sols > 1/b) = [];
-        Mnum(i,j) = length(v_sols);
+        Mcoenum(i,j) = length(v_sols);
 
     
         %Check cancer-free stability
         if((muu*(gu*muw+sw)-pu*sw)<0)
             Mcf(i,j) = -1;
+            display(["Warning: error in feasibility analysis at values s_u="
         elseif(max(real(eigs(Jcf)))>0)
             Mcf(i,j) = 0;
         else
@@ -159,8 +160,8 @@ end
 figure
 
 %Number of feasible+stable cancer free steady states - x axis is s1R, y axis is s3R
-imagesc(flipud(Mcoe+2*Mcf'))
-colorbar;
+imagesc(flipud(Mcoe'+4*Mcf'))
+%colorbar;
 xlabel('$s_u$','interpreter','latex')
 ylabel('$s_w$','interpreter','latex')
 ax = gca; set(ax,'Fontsize',16);
@@ -168,6 +169,21 @@ ax.XTick = [1, ax.XTick];
 ax.XTickLabel = suR(ax.XTick);
 ax.YTick = [1, ax.YTick];
 ax.YTickLabel = flip(swR((ax.YTick)));
-title('# of feasible+stable CANCER-FREE steady states')
+title('Stability of cancer-free and coexistence equilibria')
+
+mx = max(max(Mcoe+4*Mcf));
+mn = min(min(Mcoe));
+
+if(mn <0)
+
+elseif(mx == 5)
+C=jet(5);
+C(end+1,:)=1;
+colormap(flipud(C))
+colorbar('Ticks',linspace(0,5,4),...
+    'TickLabels',["None Stable","1 Coex",...,
+    "2 Coex","3 Coex", "CF"]);
+
+end
 
 

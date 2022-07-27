@@ -1,3 +1,4 @@
+N=1;
 Init_Parameters;
 uN = 1; vN = 2; wN = 3;
 % The right-hand-side of our discretized ODE system
@@ -6,7 +7,7 @@ FH_ODE = @(t, U)[f(U(uN),U(vN),U(wN));...,
 
 % Solve the ODE - optional could add: 'reltol',1e-9,'AbsTol',1e-9,
 opts = odeset('reltol',1e-12,'AbsTol',1e-12);
-uvH_init = [su*(gu*muw+sw)/(muu*(gu*muw+sw)-pu*sw),1e-6,sw/muw]';
+%uvH_init = [su*(gu*muw+sw)/(muu*(gu*muw+sw)-pu*sw),1e-6,sw/muw]';
 [T, U] = ode15s(FH_ODE,tspan,uvH_init,opts);
 
 close all;

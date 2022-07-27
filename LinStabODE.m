@@ -59,17 +59,19 @@ for i=1:N
         %Only consider real roots
         v_sols(imag(v_sols) ~= 0) = [];
         %Only consider positive roots smaller than 1/b.
-        v_sols(0 > v_sols) = []; v_sols(v_sols > 1/b) = [];
+        v_sols(0 > v_sols) = []; v_sols(v_sols > 1/b+1e-12) = [];
         Mcoenum(i,j) = length(v_sols);
 
-    
+
         %Check cancer-free stability
         if((muu*(gu*muw+sw)-pu*sw)<0)
-            Mcf(i,j) = -1;
+            %Mcf(i,j) = -1;
+            display(["Warning: feasibility error at s_u=",...,
+                num2str(su), ", s_w = ", num2str(sw)]);
         elseif(max(real(eigs(Jcf)))>0)
             Mcf(i,j) = 0;
         else
-        
+
         end
 
         %If no roots are found, set M_ij = 0.
@@ -83,19 +85,22 @@ for i=1:N
                 %wss = (pw*uss*vss + gw*sw + sw*vss)/((gw + vss)*muw);
                 wss = (pw*uss*vss + gw*sw + sw*vss)/((gw + vss)*muw);
                 %Check if there is an error in feasibility analysis.
-                if(uss < -1e-14 || wss < -1e-14)
-                    "Warning: error in feasibility analysis!"
-                    Mcoe(i,j) = -1;
-                    su
-                    sw
+
+                %Throw out spurious roots?
+                if(abs(f(uss,vss,wss)) > 1e-12 || abs(g(uss,vss,wss)) > 1e-12 || abs(h(uss,vss,wss)) > 1e-12 )
+
+                elseif(uss < -1e-14 || wss < -1e-14)
+                    display(["Warning: feasibility error at s_u=",...,
+                        num2str(su), ", s_w = ", num2str(sw)]);
+                    %Mcoe(i,j) = -1;
                 else
-                    %Compute if any instability occurs - if so, leave value 
-                    %of M_Ij unchanged 
+                    %Compute if any instability occurs - if so, leave value
+                    %of M_Ij unchanged
                     if(max(real(eigs(J(uss,vss,wss))))>0)
                         Mcoe(i,j) = Mcoe(i,j) + 0;
 
-                    %If no instability occurs, then this steady state is
-                    %stable so add 1 to M_ij
+                        %If no instability occurs, then this steady state is
+                        %stable so add 1 to M_ij
                     else
                         Mcoe(i,j)=Mcoe(i,j) + 1;
                     end
@@ -108,7 +113,7 @@ end
 %Bad plotting code
 close all;
 % figure;
-% 
+%
 % %Number of feasible steady states - x axis is s1R, y axis is s3R
 % imagesc(flipud(Mn'))
 % colorbar;
@@ -120,10 +125,10 @@ close all;
 % ax.YTick = [1, ax.YTick];
 % ax.YTickLabel = flip(swR((ax.YTick)));
 % title('# of feasible steady states')
-% 
-% 
+%
+%
 % figure
-% 
+%
 % %Number of feasible+stable coexistence steady states - x axis is s1R, y axis is s3R
 % imagesc(flipud(M'))
 % colorbar;
@@ -135,9 +140,9 @@ close all;
 % ax.YTick = [1, ax.YTick];
 % ax.YTickLabel = flip(swR((ax.YTick)));
 % title('# of feasible+stable COEXISTENCE steady states')
-% 
+%
 % figure
-% 
+%
 % %Number of feasible+stable cancer free steady states - x axis is s1R, y axis is s3R
 % imagesc(flipud(Mcf'))
 % colorbar;
@@ -159,7 +164,7 @@ end
 figure
 
 %Number of feasible+stable cancer free steady states - x axis is s1R, y axis is s3R
-imagesc(flipud(Mcoe'+2*Mcf'))
+imagesc(flipud(Mcoe'+4*Mcf'))
 %colorbar;
 xlabel('$s_u$','interpreter','latex')
 ylabel('$s_w$','interpreter','latex')
@@ -169,5 +174,20 @@ ax.XTickLabel = suR(ax.XTick);
 ax.YTick = [1, ax.YTick];
 ax.YTickLabel = flip(swR((ax.YTick)));
 title('Stability of cancer-free and coexistence equilibria')
+
+mx = max(max(Mcoe+4*Mcf));
+mn = min(min(Mcoe+4*Mcf));
+strings = {"None Stable", "1 Coex","2 Coex","3 Coex", "CF", "CF+1Coex",...
+    "CF+2Coex","CF+3Coex"};
+if(mn <0)
+    "Feasibility errors - no plots produced."
+
+else
+    C=jet(mx-mn+1);
+    colormap(flipud(C))
+    colorbar('Ticks',linspace(mn+0.5,mx-0.5,mx-mn+1.5),...
+        'TickLabels',strings(1+mn:mx+2));
+
+end
 
 
