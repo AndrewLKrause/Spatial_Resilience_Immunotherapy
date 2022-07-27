@@ -6,13 +6,13 @@
 
 
 %Parameters
-c = 0.25;
+c = 0.01;
 muu=0.167; pu=0.69167; gu=20;
 rv=1;b=1;pv=0.5555556;gv=0.1;
 pw=27.778;gw=0.001;muw=55.55556;
 
 %Number of grid points in each direction of s1-s3:
-N=200;
+N=400;
 
 %Ranges of s1, s3
 suR = linspace(0,0.05,N);
@@ -168,23 +168,24 @@ imagesc(flipud(Mcoe'+4*Mcf'))
 %colorbar;
 xlabel('$s_u$','interpreter','latex')
 ylabel('$s_w$','interpreter','latex')
-ax = gca; set(ax,'Fontsize',16);
+ax = gca; set(ax,'Fontsize',14);
 ax.XTick = [1, ax.XTick];
 ax.XTickLabel = suR(ax.XTick);
 ax.YTick = [1, ax.YTick];
 ax.YTickLabel = flip(swR((ax.YTick)));
-title('Stability of cancer-free and coexistence equilibria')
+title(['Stable Equilibria for $c=$',num2str(c)],'interpreter','latex')
 
 mx = max(max(Mcoe+4*Mcf));
 mn = min(min(Mcoe+4*Mcf));
+C=lines(8);
 strings = {"None Stable", "1 Coex","2 Coex","3 Coex", "CF", "CF+1Coex",...
     "CF+2Coex","CF+3Coex"};
 if(mn <0)
     "Feasibility errors - no plots produced."
 
 else
-    C=jet(mx-mn+1);
-    colormap(flipud(C))
+    
+    colormap(flipud(C(mn+1:mx+1,:)))
     colorbar('Ticks',linspace(mn+0.5,mx-0.5,mx-mn+1.5),...
         'TickLabels',strings(1+mn:mx+2));
 
