@@ -1,3 +1,5 @@
+
+N = 100^2;
 Init_Parameters;
 
 %THIS ONLY WORKS IF N=M^2 FOR INTEGER M!

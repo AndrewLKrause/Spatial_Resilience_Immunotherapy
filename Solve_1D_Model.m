@@ -1,3 +1,5 @@
+
+N = 5000;
 Init_Parameters;
 
 dx = L/(N-1); % Spacing between grid points
