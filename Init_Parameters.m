@@ -22,7 +22,7 @@ pw=27.778;gw=0.001;muw=55.55556;
 %c = 0.05;
 %su=0.04+0.1; %can be increased in steps
 %sw=79.9499+20; %can be increased in steps
-c=0.1; su = 0.04; sw = 100;
+c=0.1; su = 0.015; sw = 100;
 
 % Kinetic functions
 f = @(u,v,w)c*v-muu*u+pu*u.*w./(gu+w)+su;
@@ -39,8 +39,8 @@ uss = 0.01; vss = 1/b; wss = 0.01;
 
 % Create a normally distributed vector of size 3*N, mean 1, stdev 1e-2.
 rng(1);
-rand_vec = abs(1+randn(3*N,1)); 
+rand_vec = abs(1+1e-1*randn(3*N,1)); 
 
 % Initial conditions for ODE system
-%uvH_init = [uss*rand_vec(uN);vss*rand_vec(vN); wss*rand_vec(wN)];
-uvH_init = [U(end,uN)'; U(end,vN)'; U(end,wN)'];
+uvH_init = [uss*rand_vec(uN);vss*rand_vec(vN); wss*rand_vec(wN)];
+%uvH_init = [U(end,uN)'; U(end,vN)'; U(end,wN)'];
