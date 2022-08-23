@@ -29,6 +29,18 @@ FH_PDE = @(t, U)[f(U(uN),U(vN),U(wN))+d1*Lap*U(uN);...,
 opts = odeset('JPattern',JPattern,'reltol',1e-9,'AbsTol',1e-9);
 [~, U] = ode15s(FH_PDE,tspan,uvH_init,opts);
 
+rows=size(U,1);
+for t=1:rows
+    tv=sum(U(t,vN))/N;
+    tu=sum(U(t,uN))/N;
+    tw=sum(U(t,wN))/N;
+    vt(t)=tv;
+    ut(t)=tu;
+    wt(t)=tw;
+end
+
+
+
 close all;
 plot(x,U(end,uN),'linewidth',2); hold on;
 plot(x,U(end,vN),'linewidth',2);
@@ -40,3 +52,8 @@ figure
 
 imagesc(flipud(U(:,vN)))
 colorbar
+
+figure
+plot(ut,'linewidth',2); hold on;
+plot(vt,'linewidth',2);
+plot(wt,'linewidth',2)
