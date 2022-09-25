@@ -6,7 +6,7 @@
 
 
 %Parameters
-c=0.1;
+c=0.0;
 muu=0.167; pu=0.69167; gu=20;
 rv=1;b=1;pv=0.5555556;gv=0.1;
 pw=27.778;gw=0.001;muw=55.55556;
@@ -178,17 +178,32 @@ title(['Stable Equilibria for $c=$',num2str(c)],'interpreter','latex')
 mx = max(max(Mcoe+4*Mcf));
 mn = min(min(Mcoe+4*Mcf));
 C=lines(8);
-strings = {"None Stable", "1 Coex","2 Coex","3 Coex", "CF", "CF+1Coex",...
-    "CF+2Coex","CF+3Coex"};
+%strings = ["None Stable", "1 Coex","2 Coex","3 Coex", "CF", "CF+1Coex",...
+    %"CF+2Coex","CF+3Coex"];
+strings = ["None Stable", "1 Coex","2 Coex","3 Coex", "CF", "CF+1Coex"];
 if(mn <0)
     "Feasibility errors - no plots produced."
 
-else
-    
-    colormap(flipud(C(mn+1:mx+1,:)))
-    colorbar('Ticks',linspace(mn+0.5,mx-0.5,mx-mn+1.5),...
-        'TickLabels',strings(1+mn:mx+2));
+% else
+%     
+%     colormap(flipud(C(mn+1:mx+1,:)))
+%     colorbar('Ticks',linspace(mn+0.5,mx-0.5,mx-mn+1.5),...
+%         'TickLabels',strings(1+mn:mx+2));
 
+%new code to make colours consistent across different c values
+%seem to have maximum value 5 (ie 1 cf and 1coex simultaneously stable
+%across c values
+else
+    ccmap=[0 0.4470 0.7410;
+        0.8500 0.3250 0.0980;
+        0.9290 0.6940 0.1250;
+        0.4940 0.1840 0.5560; 
+        0.4660 0.6740 0.1880;
+        0.3010 0.7450 0.9330];
+    colormap(flipud(ccmap))
+    colorbar('Ticks',linspace(0.5,5-0.5,5+1.5),...
+        'TickLabels',strings(1:6))
+    caxis([0 5])
 end
 
 
