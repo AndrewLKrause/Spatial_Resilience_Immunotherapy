@@ -5,9 +5,9 @@ clear;
 %the LaTeX code for the expression.
 
 %Define the symbolic variables and reaction kinetics.
-syms alpha rho_u mu_u sigma_u gamma_v rho_w gamma_w mu_w sigma_w f g h u v w lambda;
-f = alpha*v -mu_u*u + rho_u*u*w/(1 + w) + sigma_u;
-g = v*(1-v) -u*v/(gamma_v + v);
+syms alpha rho_u rho_v gamma_w mu_u sigma_u gamma_v rho_w gamma_w mu_w sigma_w f g h u v w lambda;
+f = alpha*v -mu_u*u + rho_u*u*w/(gamma_w + w) + sigma_u;
+g = v*(1-v) -rho_v*u*v/(gamma_v + v);
 h = rho_w*u*v/(gamma_w + v) - mu_w*w  +sigma_w;
 
 %Cancer-free equilibrium (v_0=0)
@@ -21,7 +21,7 @@ latex(J);
 
 %Stability of cancer-free state via eigenvalues.
 J0 = subs(subs(subs(J,u,u_0),w,w_0),v,0);
-latex(eig(J0));
+latex(eig(J0))
 
 %Cancer coexistence state (NB: Need to clear symbols u_0 and w_0).
 clear('w_0'); clear('u_0');

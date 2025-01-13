@@ -1,5 +1,5 @@
 
-N = 5000;
+N = 2000;
 Init_Parameters;
 
 dx = L/(N-1); % Spacing between grid points
@@ -26,7 +26,7 @@ FH_PDE = @(t, U)[f(U(uN),U(vN),U(wN))+d1*Lap*U(uN);...,
     g(U(uN),U(vN),U(wN))+d2*Lap*U(vN);h(U(uN),U(vN),U(wN))+d3*Lap*U(wN)];
 
 % Solve the PDE - optional could add: 'reltol',1e-9,'AbsTol',1e-9,
-opts = odeset('JPattern',JPattern,'reltol',1e-9,'AbsTol',1e-9);
+opts = odeset('JPattern',JPattern,'reltol',1e-11,'AbsTol',1e-11);
 [~, U] = ode15s(FH_PDE,tspan,uvH_init,opts);
 
 rows=size(U,1);
@@ -44,7 +44,7 @@ end
 close all;
 plot(x,U(end,uN),'linewidth',2); hold on;
 plot(x,U(end,vN),'linewidth',2);
-plot(x,U(end,wN),'linewidth',2);
+plot(x,U(end,wN),'--','linewidth',2);
 
 legend('$u$','$v$','$w$','interpreter','latex')
 
@@ -56,4 +56,4 @@ colorbar
 figure
 plot(ut,'linewidth',2); hold on;
 plot(vt,'linewidth',2);
-plot(wt,'linewidth',2)
+plot(wt,'--','linewidth',2)
