@@ -1,5 +1,5 @@
 % Geometric Parameters
-L = 10; % Length of macroscale domain
+L = 200; % Length of macroscale domain
 
 % Mesh size parameters - let each solver decide this independently!
 %N = 100^2; % Total number of grid points to use
@@ -16,8 +16,8 @@ d1=1000; d2=1; d3=10000;
  
 % Kinetic parameters
 rho_u  =  0.692; rho_w  =  2.5; gamma_v  =  0.1; gamma_w  =  0.001;
-mu_u  =  0.167; mu_w  =  55.56; sigma_u  =  0.00001; sigma_w  =  0; 
-alpha=0.03;
+mu_u  =  0.167; mu_w  =  55.56; sigma_u  =  0.01; sigma_w  =  0; 
+alpha=0.1;
 
 % Kinetic functions
 f = @(u,v,w)alpha*v-mu_u*u+rho_u*u.*w./(1+max(w,0))+sigma_u;
