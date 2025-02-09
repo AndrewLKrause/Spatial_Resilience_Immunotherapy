@@ -4,8 +4,6 @@ L = 300; % Length of macroscale domain
 % Mesh size parameters - let each solver decide this independently!
 %N = 100^2; % Total number of grid points to use
 
-%Test commit! 23
-
 % Time/space scale for simulation
 T = 1e5; 
 tspan = linspace(0,T,1e5); % Interpolate solution on [0,T] with 1e2 points
