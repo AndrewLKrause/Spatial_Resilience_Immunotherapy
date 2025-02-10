@@ -1,22 +1,25 @@
-%This code will produce two matrices, M and Mn where:
-%Mn(i,j) will be the number of feasible coexistence steady states which
-%exist, and M(i,j) will be the number of feasible and stable coexistence
-%steady states. These correspond to the parameters below with s1 = s1R(i)
-%and s3 = s3R(j). TODO: UPDATED NOTATION
-
 
 %Parameters
-c=0.0;
-muu=0.167; pu=0.69167; gu=20;
-rv=1;b=1;pv=0.5555556;gv=0.1;
-pw=27.778;gw=0.001;muw=55.55556;
+alp=0.07;
+muu=0.167; rhou=0.692;
+gamv=0.1;
+rhow=2.5 ;gamw=0.001;muw=55.56;
 
 %Number of grid points in each direction of s1-s3:
 N=400;
 
 %Ranges of s1, s3
-suR = linspace(0,0.05,N);
-swR = linspace(0,100,N);
+suR = linspace(0,0.06,N);
+swR = linspace(0,18,N);
+
+% %reduced range for alp=0.01
+% suR = linspace(0.002,0.005,N);
+% swR = linspace(13,14,N);
+% 
+% %reduced range for alp=0.07
+% suR = linspace(0.013,0.017,N);
+% swR = linspace(0,3,N);
+
 
 %M will store our stability values - coe is coexistence, cf is cancer-free,
 %and coenum is a matrix to store number of feasible states of coexistence.
@@ -30,44 +33,38 @@ for i=1:N
         sw = swR(j);
 
         % Kinetic functions
-        f = @(u,v,w)c*v-muu*u+pu*u.*w./(gu+w)+su;
-        g = @(u,v,w)rv*v.*(1-b*v)-pv*u.*v./(gv+v);
-        h = @(u,v,w)pw*u.*v./(gw+v)-muw*w+sw;
+        f = @(u,v,w)alp.*v-muu.*u+rhou.*u.*w./(1+w)+su;
+        g = @(u,v,w)v.*(1-v)-u.*v./(gamv+v);
+        h = @(u,v,w)rhow*u.*v./(gamw+v)-muw*w+sw;
 
         % Jacobian
-        J = @(u,v,w)[-muu+pu.*w./(gu+w),     c,     pu*u.*gu./(gu + w).^2;...
-            -pv.*v./(gv+v),      rv.*(1-2.*b.*v)-pv*gv*u./((gv+v).^2),   0;...
-            pw*v./(gw+v),pw*gw*u./((gw+v).^2),-muw];
-        Jcf = J(su*(gu*muw+sw)/(muu*(gu*muw+sw)-pu*sw),0,sw/muw);
+        J = @(u,v,w)[-muu+rhou.*w./(1+w),     alp,     rhou.*u./(1 + w) - rhou*u.*w./(1 + w).^2;...
+            -v./(gamv+v),      1-2.*v - u./(gamv+v) + v.*u./((gamv+v).^2),   0;...
+            rhow.*v./(gamw+v), rhow.*u./(gamw + v)-rhow.*v.*u./((gamw+v).^2), -muw];
+        Jcf = J(su*(muw+sw)/(muu*(muw+sw)-rhou*sw),0,sw/muw);
         %Compute coefficients for v equation
-        c5 = -b^2*rv^2*pw*(-pu + muu);
-        c4 = -2*pw*((-pu + muu)*(b*gv - 1)*rv + pv*c/2)*b*rv;
-        c3 = -rv*(pw*(b^2*gv^2 - 4*b*gv + 1)*(-pu + muu)*rv + (b*c*pw*gv + (su*pw + (-gu*muw - sw)*muu + pu*sw)*b - c*pw)*pv);
-        c2 = 2*gv*pw*(-pu + muu)*(b*gv - 1)*rv^2 - (((su*pw + (-gu*muw - sw)*muu + pu*sw)*b - c*pw)*gv - gw*((gu*muw + sw)*muu - pu*sw)*b - su*pw + (gu*muw + sw)*muu - pu*sw)*pv*rv + pv^2*c*(gu*muw + sw);
-        c1 = -gv^2*pw*(-pu + muu)*rv^2 + ((gw*((gu*muw + sw)*muu - pu*sw)*b + su*pw + (-gu*muw - sw)*muu + pu*sw)*gv - gw*((gu*muw + sw)*muu - pu*sw))*pv*rv + pv^2*(gu*muw + sw)*(c*gw + su);
-        c0 = -gw*(gv*((gu*muw + sw)*muu - pu*sw)*rv - pv*su*(gu*muw + sw))*pv;
+        c5 = (-muu + rhou)*rhow;
+        c4 =-((alp + 2*(-1 + gamv)*(muu - rhou))*rhow);
+        c3 = rhow*(alp - alp*gamv + rhou + (-4 + gamv)*gamv*rhou - su) - rhou*sw + muu*(muw - (1 + (-4 + gamv)*gamv)*rhow + sw);
+        c2 = -((-1 + gamv)*rhow*(2*gamv*rhou + su)) - (-1 + gamv + gamw)*rhou*sw + alp*(muw + gamv*rhow + sw) + muu*((-1 + gamv + gamw)*muw + 2*(-1 + gamv)*gamv*rhow + (-1 + gamv + gamw)*sw);
+        c1 = -gamw*muu*muw + gamv^2*(-muu + rhou)*rhow + muw*su + gamv*rhow*su - gamw*muu*sw + gamw*rhou*sw + su*sw + alp*gamw*(muw + sw) + gamv*(-1 + gamw)*(-rhou*sw + muu*(muw + sw));
+        c0= gamw*(gamv*rhou*sw - gamv*muu*(muw + sw) + su*(muw + sw));
 
-        %c5 = -b^2*rv^2*pw*(-pu + muu)/pv;
-        %c4 = -2*rv*pw*((-pu + muu)*(b*gv - 1)*rv + c*pv/2)*b/pv;
-        %c3 = -rv*(pw*(b^2*gv^2 - 4*b*gv + 1)*(-pu + muu)*rv + pv*(b*c*pw*gv + (su*pw + (-gu*muw - sw)*muu + sw*pu)*b - c*pw))/pv;
-        %c2 = (2*gv*pw*(-pu + muu)*(b*gv - 1)*rv^2 - (((su*pw + (-gu*muw - sw)*muu + sw*pu)*b - c*pw)*gv - ((gu*muw + sw)*muu - sw*pu)*gw*b - su*pw + (gu*muw + sw)*muu - sw*pu)*pv*rv + c*pv^2*(gu*muw + sw))/pv;
-        %c1 = (-gv^2*pw*(-pu + muu)*rv^2 + ((((gu*muw + sw)*muu - sw*pu)*gw*b + su*pw + (-gu*muw - sw)*muu + sw*pu)*gv - ((gu*muw + sw)*muu - sw*pu)*gw)*pv*rv + pv^2*(gu*muw + sw)*(c*gw + su))/pv;
-        %c0 = -gw*(((gu*muw + sw)*muu - sw*pu)*gv*rv - su*pv*(gu*muw + sw));
 
         %Compute roots of quintic
         v_sols = roots([c5,c4,c3,c2,c1,c0]);
         %Only consider real roots
         v_sols(imag(v_sols) ~= 0) = [];
         %Only consider positive roots smaller than 1/b.
-        v_sols(0 > v_sols) = []; v_sols(v_sols > 1/b+1e-12) = [];
+        v_sols(0 > v_sols) = []; v_sols(v_sols > 1+1e-12) = [];
         Mcoenum(i,j) = length(v_sols);
 
 
         %Check cancer-free stability
-        if((muu*(gu*muw+sw)-pu*sw)<0)
-            %Mcf(i,j) = -1;
-            display(["Warning: feasibility error at s_u=",...,
-                num2str(su), ", s_w = ", num2str(sw)]);
+        if((muu*(muw+sw)-rhou*sw)<0)
+            Mcf(i,j) = 0;
+            %display(["Warning: feasibility error at s_u=",...,
+                %num2str(su), ", s_w = ", num2str(sw)]);
         elseif(max(real(eigs(Jcf)))>0)
             Mcf(i,j) = 0;
         else
@@ -81,9 +78,8 @@ for i=1:N
             %Loop over each root found.
             for vss = v_sols'
                 %Compute the values of u and w at steady state.
-                uss = -rv*(b*vss - 1)*(gv + vss)/pv;
-                %wss = (pw*uss*vss + gw*sw + sw*vss)/((gw + vss)*muw);
-                wss = (pw*uss*vss + gw*sw + sw*vss)/((gw + vss)*muw);
+                uss = (1-vss)*(gamv + vss);
+                wss = (rhow*uss*vss + gamw*sw + sw*vss)/((gamw + vss)*muw);
                 %Check if there is an error in feasibility analysis.
 
                 %Throw out spurious roots?
@@ -98,7 +94,6 @@ for i=1:N
                     %of M_Ij unchanged
                     if(max(real(eigs(J(uss,vss,wss))))>0)
                         Mcoe(i,j) = Mcoe(i,j) + 0;
-
                         %If no instability occurs, then this steady state is
                         %stable so add 1 to M_ij
                     else
@@ -110,100 +105,37 @@ for i=1:N
     end
 end
 
-%Bad plotting code
+
 close all;
-% figure;
-%
-% %Number of feasible steady states - x axis is s1R, y axis is s3R
-% imagesc(flipud(Mn'))
-% colorbar;
-% xlabel('$s_u$','interpreter','latex')
-% ylabel('$s_u$','interpreter','latex')
-% ax = gca; set(ax,'Fontsize',16);
-% ax.XTick = [1, ax.XTick];
-% ax.XTickLabel = suR(ax.XTick);
-% ax.YTick = [1, ax.YTick];
-% ax.YTickLabel = flip(swR((ax.YTick)));
-% title('# of feasible steady states')
-%
-%
-% figure
-%
-% %Number of feasible+stable coexistence steady states - x axis is s1R, y axis is s3R
-% imagesc(flipud(M'))
-% colorbar;
-% xlabel('$s_u$','interpreter','latex')
-% ylabel('$s_u$','interpreter','latex')
-% ax = gca; set(ax,'Fontsize',16);
-% ax.XTick = [1, ax.XTick];
-% ax.XTickLabel = suR(ax.XTick);
-% ax.YTick = [1, ax.YTick];
-% ax.YTickLabel = flip(swR((ax.YTick)));
-% title('# of feasible+stable COEXISTENCE steady states')
-%
-% figure
-%
-% %Number of feasible+stable cancer free steady states - x axis is s1R, y axis is s3R
-% imagesc(flipud(Mcf'))
-% colorbar;
-% xlabel('$s_u$','interpreter','latex')
-% ylabel('$s_w$','interpreter','latex')
-% ax = gca; set(ax,'Fontsize',16);
-% ax.XTick = [1, ax.XTick];
-% ax.XTickLabel = suR(ax.XTick);
-% ax.YTick = [1, ax.YTick];
-% ax.YTickLabel = flip(swR((ax.YTick)));
-% title('# of feasible+stable CANCER-FREE steady states')
 
 
-%IMPORTANT NOTE: This code will yell if it detects multistability in
-%coexistence state. It it does so, then plot colours shown are WRONG!
-if(max(max(Mcoe))>1)
-    'ERROR! Multistability of coexistence equilibria detected!';
-end
-figure
+
 
 %Number of feasible+stable cancer free steady states - x axis is s1R, y axis is s3R
-imagesc(flipud(Mcoe'+4*Mcf'))
+figure('Position', [10, 10, 800, 600]);
+imagesc(flipud(Mcoe'+3*Mcf'))
 %colorbar;
-xlabel('$s_u$','interpreter','latex')
-ylabel('$s_w$','interpreter','latex')
-ax = gca; set(ax,'Fontsize',14);
+ax = gca; set(ax,'Fontsize',25);
+xlabel('$\sigma_u$','interpreter','latex', FontSize=40)
+ylabel('$\sigma_w$','interpreter','latex', FontSize=40)
 ax.XTick = [1, ax.XTick];
-ax.XTickLabel = suR(ax.XTick);
+ax.XTickLabel = round(suR(ax.XTick),3);
 ax.YTick = [1, ax.YTick];
-ax.YTickLabel = flip(swR((ax.YTick)));
-title(['Stable Equilibria for $c=$',num2str(c)],'interpreter','latex')
+ax.YTickLabel = round(flip(swR((ax.YTick))),3);
+ax.TickLabelInterpreter = 'latex';
 
-mx = max(max(Mcoe+4*Mcf));
-mn = min(min(Mcoe+4*Mcf));
-C=lines(8);
-%strings = ["None Stable", "1 Coex","2 Coex","3 Coex", "CF", "CF+1Coex",...
-    %"CF+2Coex","CF+3Coex"];
-strings = ["None Stable", "1 Coex","2 Coex","3 Coex", "CF", "CF+1Coex"];
-if(mn <0)
-    "Feasibility errors - no plots produced."
 
-% else
-%     
-%     colormap(flipud(C(mn+1:mx+1,:)))
-%     colorbar('Ticks',linspace(mn+0.5,mx-0.5,mx-mn+1.5),...
-%         'TickLabels',strings(1+mn:mx+2));
+strings = ["None Stable", "1 Coex","2 Coex", "CF", "CF+1Coex"];
 
-%new code to make colours consistent across different c values
-%seem to have maximum value 5 (ie 1 cf and 1coex simultaneously stable
-%across c values
-else
-    ccmap=[0 0.4470 0.7410;
+
+ccmap=[0 0.4470 0.7410;
         0.8500 0.3250 0.0980;
-        0.9290 0.6940 0.1250;
         0.4940 0.1840 0.5560; 
         0.4660 0.6740 0.1880;
-        0.3010 0.7450 0.9330];
-    colormap(flipud(ccmap))
-    colorbar('Ticks',linspace(0.5,5-0.5,5+1.5),...
-        'TickLabels',strings(1:6))
-    caxis([0 5])
-end
-
+        0.3010 0.7450 0.9330];    
+colormap(flipud(ccmap))
+hcb = colorbar('Ticks',linspace(0.5,5-0.5,4+1.5),...
+        'TickLabels',strings(1:5));
+clim([0 5]);
+hcb.TickLabelInterpreter = 'latex';
 

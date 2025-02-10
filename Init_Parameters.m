@@ -1,13 +1,22 @@
 % Geometric Parameters
-L = 300; % Length of macroscale domain
+L = 100; % Length of macroscale domain
+
+
+if(dims==1)
+    N = m;
+elseif(dims==2)
+    N = m^2;
+end
+
+dx = L/(m-1); % Spacing between grid points
 
 % Mesh size parameters - let each solver decide this independently!
 %N = 100^2; % Total number of grid points to use
 
 % Time/space scale for simulation
 T = 1e5; 
-tspan = linspace(0,T,1e5); % Interpolate solution on [0,T] with 1e2 points
-x = linspace(0,L,N);
+tspan = linspace(0,T,1e2); % Interpolate solution on [0,T] with 1e2 points
+x = linspace(0,L,m);
 
 % Diffusion parameters
 D = 100;% D = 100;
