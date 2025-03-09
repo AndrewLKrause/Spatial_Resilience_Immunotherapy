@@ -31,10 +31,10 @@ end
 JPattern = blkdiag(Lap,Lap,Lap)+spdiags(1,[-N,N],3*N,3*N)+spdiags(1,[-2*N,2*N],3*N,3*N);
 % The right-hand-side of our discretized ODE system
 FH_PDE = @(t, U)[f(U(uN),U(vN),U(wN))+K_u(t)+d1*Lap*U(uN);...,
-    g(U(uN),U(vN),U(wN))+d2*Lap*U(vN);h(U(uN),U(vN),U(wN))+d3*Lap*U(wN)];
+    g(U(uN),U(vN),U(wN))+d2*Lap*U(vN);h(U(uN),U(vN),U(wN))+K_w(t)+d3*Lap*U(wN)];
 
 % Solve the PDE - optional could add: 'reltol',1e-9,'AbsTol',1e-9,
-opts = odeset('JPattern',JPattern,'reltol',1e-11,'AbsTol',1e-11,'MaxStep',T/200);
+opts = odeset('JPattern',JPattern,'reltol',1e-11,'AbsTol',1e-11,'MaxStep',T/2000);
 [~, U] = ode15s(FH_PDE,tspan,uvH_init,opts);
 
 % Smooth the initial transient; ideally this can be removed with better
