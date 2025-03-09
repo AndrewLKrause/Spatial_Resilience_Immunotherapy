@@ -1,5 +1,5 @@
 % Geometric Parameters
-L = 100; % Length of macroscale domain
+L = 300; % Length of macroscale domain
 
 
 if(dims==1)
@@ -14,8 +14,8 @@ dx = L/(m-1); % Spacing between grid points
 %N = 100^2; % Total number of grid points to use
 
 % Time/space scale for simulation
-T = 1e5; 
-tspan = linspace(0,T,1e2); % Interpolate solution on [0,T] with 1e2 points
+T = 6e2; 
+tspan = linspace(0,T,1e4); % Interpolate solution on [0,T] with 1e2 points
 x = linspace(0,L,m);
 
 % Diffusion parameters
@@ -31,7 +31,7 @@ alpha=0.07;
 f = @(u,v,w)alpha*v-mu_u*u+rho_u*u.*w./(1+max(w,0))+sigma_u;
 g = @(u,v,w)v.*(1-v)-u.*v./(gamma_v+max(v,0));
 h = @(u,v,w)rho_w*u.*v./(gamma_w+max(v,0))-mu_w*w+sigma_w;
-K = @(t)0.03*t/T;
+K_u = @(t)0.03*t/T;
 
 % Index labels
 uN = 1:N; vN = N+1:2*N; wN = 2*N+1:3*N;
