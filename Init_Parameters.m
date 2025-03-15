@@ -20,7 +20,7 @@ x = linspace(0,L,m);
 
 % Diffusion parameters
 D = 100;% D = 100;
-d1=D; d2=100; d3=D;
+d1=D; d2=1; d3=D;
 
 % Kinetic parameters
 rho_u = 0.692; rho_w = 2.5; gamma_v = 0.1; 
