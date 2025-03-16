@@ -1,8 +1,8 @@
 clear;
 
-dims=1;
+dims=2;
 
-m = 10000;
+m = 50;
 Init_Parameters;
 
 
@@ -60,22 +60,22 @@ close all;
 
 
 
-f = figure;
-%f.Position(3:4) = f.Position(3:4)*1.3; f.Position(1:2) = f.Position(1:2)*0.7;
-
-imagesc(U(:,vN)')
-colour_lims = clim;
-set(gca,'YDir','normal')
-ylabel('$x$','interpreter','latex')
-xlabel('$t$','interpreter','latex')
-colorbar;
-ax = gca;
-ax.YTick = [1,round(m/3), round(2*m/3), m];
-ax.YTickLabel = {'0', num2str(L/3),num2str(2*L/3),num2str(L)};
-ax.XTick = [1,rows/2,rows];
-ax.XTickLabel = {'0', num2str(round(T/2)),num2str(T)};
-set(gca,'fontsize',22);
-colour_limits = clim;
+% f = figure;
+% %f.Position(3:4) = f.Position(3:4)*1.3; f.Position(1:2) = f.Position(1:2)*0.7;
+% 
+% imagesc(U(:,vN)')
+% colour_lims = clim;
+% set(gca,'YDir','normal')
+% ylabel('$x$','interpreter','latex')
+% xlabel('$t$','interpreter','latex')
+% colorbar;
+% ax = gca;
+% ax.YTick = [1,round(m/3), round(2*m/3), m];
+% ax.YTickLabel = {'0', num2str(L/3),num2str(2*L/3),num2str(L)};
+% ax.XTick = [1,rows/2,rows];
+% ax.XTickLabel = {'0', num2str(round(T/2)),num2str(T)};
+% set(gca,'fontsize',22);
+% colour_limits = clim;
 
 % figure
 % gca.Position = gca.Position*1.5;
@@ -84,15 +84,15 @@ colour_limits = clim;
 % set(gca,'fontsize',20);
 % clim(colour_limits)
 
-f = figure;
-%f.Position(3:4) = f.Position(3:4)*1.3; f.Position(1:2) = f.Position(1:2)*0.7;
-plot(ut,'linewidth',2); hold on;
-plot(vt,'linewidth',2);
-plot(wt,'--','linewidth',2)
-legend('$u$','$v$','$w$','interpreter','latex')
-xlabel('$t$','interpreter','latex')
-set(gca,'fontsize',22);
-
-ax = gca;
-ax.XTick = [1,rows/2,rows];
-ax.XTickLabel = {'0', num2str(round(T/2)),num2str(T)};
+% f = figure;
+% %f.Position(3:4) = f.Position(3:4)*1.3; f.Position(1:2) = f.Position(1:2)*0.7;
+% plot(ut,'linewidth',2); hold on;
+% plot(vt,'linewidth',2);
+% plot(wt,'--','linewidth',2)
+% legend('$u$','$v$','$w$','interpreter','latex')
+% xlabel('$t$','interpreter','latex')
+% set(gca,'fontsize',22);
+% 
+% ax = gca;
+% ax.XTick = [1,rows/2,rows];
+% ax.XTickLabel = {'0', num2str(round(T/2)),num2str(T)};

@@ -8,7 +8,7 @@ if(dims==1)
     legend('$u$','$v$','$w$','interpreter','latex')
 else
     figure
-    imagesc(reshape(U(end/2,uN),m,m));colorbar;title('$u$','interpreter','latex')
+    imagesc(reshape(U(end/2,vN),m,m));colorbar;title('$u$','interpreter','latex')
     figure
-    imagesc(reshape(U(end,uN),m,m));colorbar;title('$u$','interpreter','latex')
+    imagesc(reshape(U(end,vN),m,m));colorbar;title('$u$','interpreter','latex')
 end
