@@ -1,4 +1,4 @@
-This GitHub collects code for linear stability analyses, direct 1D and 2D simulations, and 1D numerical continuation for the paper, "Pattern Formation as a Resilience Mechanism in Cancer Immunotherapy." We also refer to the VisualPDE page on the [immunotherapy model](https://visualpde.com/mathematical-biology/immunotherapy-model) for an interactive implementation of the PDE models.
+This GitHub collects code for linear stability analyses, direct 1D and 2D simulations, and 1D numerical continuation for the paper, "Pattern Formation as a Resilience Mechanism in Cancer Immunotherapy." We also refer to the VisualPDE page on the [immunotherapy model](https://visualpde.com/mathematical-biology/immunotherapy-model) for an interactive implementation of the PDE model described in the paper.
 
 ## Linear Stability Analyses
 The codes `LinStabODE.m` and `TuringStability.m` respectively perform the linear stability analysis described in the paper for the ODE and PDE models respectively, including producing the figures. The file `Symbolic.m' was used to check some of the analytical calculations in these analyses.
