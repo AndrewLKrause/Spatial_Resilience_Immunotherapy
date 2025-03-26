@@ -9,7 +9,7 @@ The code implementing the simulations is `Solve_Model.m` where you set the dimen
 ## Numerical Continuation via pde2path
 To run the files for continuation, you first have to download pde2path (see [https://pde2path.uol.de/index.html](https://pde2path.uol.de/index.html)) and load it into the current path in Matlab.
 
-In the folder 'pde2path continuation`, there are two folders. Both of them work in the same way so the process will be explained for the folder called `short domain` only.
+In the folder `pde2path continuation`, there are two folders. Both of them work in the same way so the process will be explained for the folder called `short domain` only.
 
 We focus on continuing along two kinds of spatially homogeneous equilibria: the cancer-free equilibrium and the cancer coexistence equilibrium for which $v > 0$.
 
