@@ -1,8 +1,8 @@
 clear;
 
-dims=2;
+dims=1;
 
-m = 50;
+m = 1000;
 Init_Parameters;
 
 
